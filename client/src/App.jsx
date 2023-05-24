@@ -1,35 +1,115 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// CALL THE GET FUNCTION FROM THE BACKEND
+// CREATE ANOTHER COMPONENT FOR THE DATABASE ("WISHLIST")
+// IT WILL FETCH FROM THE BACKEND: ID, ALIAS,COORDINATES, IMAGE, URL
+
+import React, { useEffect, useState } from "react";
+
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [parks, setParks] = useState([]);
+  const [newPark, setNewPark] = useState("");
+  const [error, setError] = useState("");
 
+  // useEffect(() => {
+  //   getParks();
+  // }, []);
+
+  const getParks = async () => {
+    try {
+      const response = await fetch(`/api/search/${newPark}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      setParks(data.businesses);
+    } catch (err) {
+      setError("The park doesn't exist");
+    }
+  };
+  const handleChange = (event) => {
+    setNewPark(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    getParks();
+  };
+
+  async function addToWishlist(e, park) {
+    const body = {
+      id: park.id,
+      name: park.name,
+      image_url: park.image_url,
+      url: park.url,
+      latitude: park.coordinates.latitude,
+      longitude: park.coordinates.longitude,
+    };
+    console.log(JSON.stringify(body));
+
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/wishlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (!response.ok) {
+        console.log("Response was not ok");
+        throw new Error(data.message);
+      }
+      getParks();
+      console.log("Added to Wishlist");
+    } catch (err) {
+      console.log("Error adding park to wishlist: " + err);
+    }
+  }
+
+  // THE INPUT
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container">
+      <h3 className="text-center">THEME PARK SEARCH</h3>
+      <form onSubmit={handleSubmit}>
+        <div className="input-group">
+          <input
+            placeholder="Disneyland, Phantasialand..."
+            type="text"
+            value={newPark}
+            onChange={handleChange}
+            className="form-control"
+          />
+          <button type="submit" className="btn btn-warning">
+            Search
+          </button>
+        </div>
+      </form>
+      {/* {error && <div>{error}</div>} THE ERROR MESSAGE DOESN'T GO AWAY */}
+
+      <div className="list-group mt-4">
+        {parks.map((park) => (
+          <div
+            key={park.id}
+            className="list-group-item d-flex align-items-center justify-content-between"
+          >
+            {park.name}
+            {/* ONCLICK SEND ME TO THE YELP PAGE */}
+            <button
+              onClick={(e) => addToWishlist(e, park)}
+              className="btn btn-primary"
+              type="submit"
+            >
+              SAVE
+            </button>
+            {/* ONCLICK SENDS THE INFO TO THE WISHLIST COMPONENT */}
+          </div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
