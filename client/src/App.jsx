@@ -7,18 +7,22 @@ import Wishlist from "../routes/Wishlist";
 function App() {
   return (
     <div>
-      <nav>
-        <div>
-          <Link to="/home">Home</Link>
-        </div>
-        <div>
-          <Link to="/wishlist">Wishlist</Link>
-        </div>
+      <ul className="nav justify-content-end container-sm grid gap-3">
+        <li>
+          <Link to="/home">
+            <i className="fa-solid fa-house"></i>
+          </Link>
+        </li>
+        <li>
+          <Link to="/wishlist">
+            <i className="fa-solid fa-star"></i>
+          </Link>
+        </li>
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/wishlist" element={<Wishlist />} />
         </Routes>
-      </nav>
+      </ul>
     </div>
   );
 }

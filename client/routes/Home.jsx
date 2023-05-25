@@ -1,12 +1,15 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [parks, setParks] = useState([]);
   const [newPark, setNewPark] = useState("");
   const [error, setError] = useState("");
 
-  //GET the park I search
+  useEffect(() => {
+    setError("");
+  }, [newPark]);
+
+  //GET the parks I'm searching
   const getParks = async () => {
     try {
       const response = await fetch(`/api/search/${newPark}`);
@@ -14,7 +17,7 @@ export default function Home() {
       if (!response.ok) throw new Error(data.message);
       setParks(data.businesses);
     } catch (err) {
-      setError("The park doesn't exist");
+      setError("Oops! Looks like this park doesn't exist.");
     }
   };
   const handleChange = (event) => {
@@ -60,6 +63,11 @@ export default function Home() {
     }
   }
 
+  //DISABLE button when clicked
+  const disableButton = (event) => {
+    event.currentTarget.disabled = true;
+  };
+
   // THE INPUT
   return (
     <div className="container">
@@ -79,7 +87,7 @@ export default function Home() {
           </button>
         </div>
       </form>
-      {/* {error && <div>{error}</div>} */}
+      {error && <div className="error-message">{error}</div>}
 
       <div className="list-group mt-4">
         {parks.map((park) => (
@@ -87,15 +95,19 @@ export default function Home() {
             key={park.id}
             className="list-group-item d-flex align-items-center justify-content-between"
           >
-            {park.name}
+            <a href={park.url} target="_blank">
+              {park.name}
+            </a>
             {/* ONCLICK SEND ME TO THE YELP PAGE */}
             <button
               className="btn btn-outline-primary btn-sm"
               type="submit"
-              onClick={(e) => addToWishlist(e, park)}
-              // when clicked it should change style
+              onClick={(e) => {
+                addToWishlist(e, park);
+                disableButton(e);
+              }}
             >
-              SAVE
+              <i className="fa-sharp fa-solid fa-pen-to-square"></i>
             </button>
           </div>
         ))}

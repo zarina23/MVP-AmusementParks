@@ -25,23 +25,19 @@ export default function Wishlist() {
     }
   };
 
-  async function deleteItemFromWishlist(id) {
+  const deleteItemFromWishlist = async (id) => {
     try {
       const response = await fetch(`/api/wishlist/${id}`, {
         method: "DELETE",
       });
       const data = await response.json();
-      console.log(data.message);
       if (!response.ok) throw new Error(data.message);
       loadWishlist();
+      console.log(data.message);
     } catch (err) {
       console.log(err);
     }
-  }
-
-  // function handleUrlClick
-  // When onClick
-  // another window opens the park.url
+  };
 
   return (
     <div className="container">
@@ -52,13 +48,14 @@ export default function Wishlist() {
             key={park.id}
             className="list-group-item d-flex align-items-center justify-content-between"
           >
-            {park.name}
-            {/* handleUrlClick */}
+            <a href={park.url} target="_blank">
+              {park.name}
+            </a>
             <button
-              onClick={(e) => deleteItemFromWishlist(e, park)}
+              onClick={() => deleteItemFromWishlist(park.id)}
               className="btn btn-outline-danger btn-sm"
             >
-              Delete from wishlist
+              <i className="fa-solid fa-trash-can"></i>
             </button>
           </div>
         ))}
