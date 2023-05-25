@@ -11,14 +11,6 @@ router.get("/", function (req, res, next) {
   res.send({ title: "Express" });
 });
 
-router.get("/wishlist", function (req, res, next) {
-  res.send({ title: "Wishlist" });
-});
-
-// IT SHOULD GET THE NAME, ID, LATITUDE, LONGITUDE, IMAGE.
-//THEN IT SHOULD POST IT IN A DATABASE THAT I HAVE TO CREATE
-// THE DATABASE WILL BE SAVED IN A DIFFERENT COMPONENT IN THE FRONTEND
-
 //GET all the results from the API based on the location
 router.get("/search/:location", async (req, res) => {
   const { location } = req.params;
@@ -43,18 +35,42 @@ router.get("/search/:location", async (req, res) => {
     });
 });
 
-// INSERT the results in the DB
+// INSERT the items in the DB (parks)
 router.post("/wishlist", async function (req, res, next) {
   console.log("Post succeeded");
   const { id, name, image_url, url, latitude, longitude } = req.body;
   console.log(req.body);
   try {
     await db(
-      `INSERT INTO parks (id, name, image_url, url, latitude, longitude) VALUES ("${id}", "${name}", "${image_url}", "${url}", "${latitude}", "${longitude}")`
+      `INSERT INTO parks (yelp_id, name, image_url, url, latitude, longitude) VALUES ("${id}", "${name}", "${image_url}", "${url}", "${latitude}", "${longitude}")`
     );
     res.send({ message: "Saved in your wishlist!" });
   } catch (err) {
     console.log("in catch");
+    res.status(500).send(err);
+  }
+});
+
+//GET the items from the wishlist
+
+router.get("/wishlist", function (req, res, next) {
+  db("SELECT * FROM parks;")
+    .then((results) => {
+      res.send(results.data);
+    })
+    .catch((err) => res.status(500).send(err));
+});
+
+// REMOVE item from the wishlist
+
+router.delete("/wishlist/:id", async function (req, res, next) {
+  const { id } = req.params;
+
+  try {
+    await db(`DELETE FROM parks WHERE id = "${id}"`);
+
+    res.send({ message: "Park deleted!" });
+  } catch (err) {
     res.status(500).send(err);
   }
 });
