@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import Map from "./Map";
 
 export default function Home() {
   const [parks, setParks] = useState([]);
@@ -9,7 +10,6 @@ export default function Home() {
     setError("");
   }, [newPark]);
 
-  //GET the parks I'm searching
   const getParks = async () => {
     try {
       const response = await fetch(`/api/search/${newPark}`);
@@ -20,6 +20,7 @@ export default function Home() {
       setError("Oops! Looks like this park doesn't exist.");
     }
   };
+
   const handleChange = (event) => {
     setNewPark(event.target.value);
   };
@@ -68,7 +69,6 @@ export default function Home() {
     event.currentTarget.disabled = true;
   };
 
-  // THE INPUT
   return (
     <div className="container">
       <h3 className="text-center">THEME PARK SEARCH</h3>
@@ -95,19 +95,18 @@ export default function Home() {
             key={park.id}
             className="list-group-item d-flex align-items-center justify-content-between"
           >
-            <a href={park.url} target="_blank">
+            <a href={park.url} target="_blank" rel="noopener noreferrer">
               {park.name}
             </a>
-            {/* ONCLICK SEND ME TO THE YELP PAGE */}
             <button
-              className="btn btn-outline-primary btn-sm"
+              className="btn btn-outline-warning btn-sm"
               type="submit"
               onClick={(e) => {
                 addToWishlist(e, park);
                 disableButton(e);
               }}
             >
-              <i className="fa-sharp fa-solid fa-pen-to-square"></i>
+              <i className="fa-solid fa-star"></i>
             </button>
           </div>
         ))}

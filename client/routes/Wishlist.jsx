@@ -1,5 +1,9 @@
+// Each item should be saved only once:
+// by changing preferences in the mysql table?
+
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import Map from "./Map";
 
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState([]);
@@ -7,12 +11,6 @@ export default function Wishlist() {
   useEffect(() => {
     loadWishlist();
   }, []);
-
-  // async function loadWishlist() {
-  //   const res = await fetch("/api/wishlist");
-  //   const data = await res.json();
-  //   setWishlist(data);
-  // }
 
   const loadWishlist = async () => {
     try {
@@ -64,6 +62,7 @@ export default function Wishlist() {
           <Outlet />
         </div>
       </div>
+      <Map parks={wishlist} />
     </div>
   );
 }
