@@ -1,3 +1,5 @@
+//ISSUES:
+// 1. I can save the same park multiple times
 // Each item should be saved only once:
 // by changing preferences in the mysql table?
 
@@ -7,6 +9,7 @@ import Map from "./Map";
 
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState([]);
+  const [selectedPark, setSelectedPark] = useState(null);
 
   useEffect(() => {
     loadWishlist();
@@ -37,6 +40,10 @@ export default function Wishlist() {
     }
   };
 
+  const showParkOnMap = (park) => {
+    setSelectedPark(park);
+  };
+
   return (
     <div className="container">
       <h3 className="text-center">Wishlist</h3>
@@ -46,15 +53,26 @@ export default function Wishlist() {
             key={park.id}
             className="list-group-item d-flex align-items-center justify-content-between"
           >
-            <a href={park.url} target="_blank">
-              {park.name}
-            </a>
-            <button
-              onClick={() => deleteItemFromWishlist(park.id)}
-              className="btn btn-outline-danger btn-sm"
-            >
-              <i className="fa-solid fa-trash-can"></i>
-            </button>
+            {park.name}
+            <div className=" align-items-start justify-content-between">
+              <div onClick={() => showParkOnMap(park)}>
+                <button className="btn btn-outline-success btn-sm">
+                  <i className="fa-solid fa-location-dot"></i>
+                </button>
+
+                <a href={park.url} target="_blank">
+                  <button className="btn btn-outline-info btn-sm">
+                    <i className=" fa-solid fa-circle-info"></i>
+                  </button>
+                </a>
+                <button
+                  onClick={() => deleteItemFromWishlist(park.id)}
+                  className="btn btn-outline-danger btn-sm"
+                >
+                  <i className="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
           </div>
         ))}
 
@@ -62,7 +80,7 @@ export default function Wishlist() {
           <Outlet />
         </div>
       </div>
-      <Map parks={wishlist} />
+      <Map parks={wishlist} selectedPark={selectedPark} />
     </div>
   );
 }

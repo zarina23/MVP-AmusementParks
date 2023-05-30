@@ -1,11 +1,19 @@
-import React from "react";
+//ISSUES:
+// 1. process.env doesn't work here
+// 2. The map isn't showing everything
 
-const REACT_APP_GOOGLE_API_KEY = "AIzaSyBefviJmnnwQoqZnHlXG-895nGCkY46RYw";
+import React, { useState, useEffect } from "react";
 
-// pass through props the newPark
+const REACT_APP_GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
-export default function Map({ parks }) {
+export default function Map({ parks, selectedPark }) {
+  const [error, setError] = useState("");
+
   const parkNames = parks.map((park) => park.name);
+
+  useEffect(() => {
+    setError("");
+  }, [parkNames]);
 
   return (
     <div>
@@ -14,16 +22,18 @@ export default function Map({ parks }) {
           title="Google Map"
           width="100%"
           height="250"
-          frameBorder="0"
+          frameBorder="3"
           style={{ border: 3 }}
           referrerPolicy="no-referrer-when-downgrade"
-          src={`https://www.google.com/maps/embed/v1/search?key=${REACT_APP_GOOGLE_API_KEY}&q=${encodeURIComponent(
-            parkNames
-          )}`}
+          src={`https://www.google.com/maps/embed/v1/search?key=${REACT_APP_GOOGLE_API_KEY}&q=${
+            selectedPark ? selectedPark.name : parkNames
+          }`}
           allowFullScreen
         ></iframe>
       ) : (
-        <p>No parks available</p>
+        <div>
+          {error && <div className="error-message">{"No parks available"}</div>}
+        </div>
       )}
     </div>
   );

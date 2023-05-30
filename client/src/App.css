@@ -1,3 +1,18 @@
+h3 {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  color: rgb(76, 10, 137);
+}
+
+.search-button {
+  color: white;
+  background-color: rgb(76, 10, 137);
+}
+
+.background {
+  background-color: white;
+}
+
 .error-message {
   font-size: x-small;
 }
