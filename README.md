@@ -1,10 +1,30 @@
 # My Theme Park Database
 
+## SETUP
+
+- BACKEND: In your console, cd into the folder "mvp-FS26-Andrea-Teres". Run "npm start".
+- FRONTEND: In a new console, cd into the "client" folder and run "npm run dev".
+- DATABASE: In a new console, go into "mysql" and type:
+  - USE parks;
+  - SELECT \* FROM parks;
+    This will display the table with the contents of the database (Note: If your Wishlist is empty, so will be the database table).
+    You don't really need to work on the database in mysql (the contents are sent from the frontend and then the backend), but you can check if the Wishlist is working.
+
 ## Introduction
 
 This MVP allows you to search any theme park in the world, display it in a map and save it in a wishlist.
 
 ## How does it work?
+
+[display search results]
+YELP API --> BACKEND --> HOME
+
+[send items to Wishlist]
+HOME --> BACKEND --> DATABASE --> WISHLIST
+
+[display on map]
+GOOGLE API --> MAP --> HOME
+GOOGLE API --> MAP --> WISHLIST
 
 ### HOME
 
