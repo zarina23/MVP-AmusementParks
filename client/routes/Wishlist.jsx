@@ -1,8 +1,3 @@
-//ISSUES:
-// 1. I can save the same park multiple times
-// Each item should be saved only once:
-// by changing preferences in the mysql table?
-
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Map from "./Map";

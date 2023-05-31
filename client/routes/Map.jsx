@@ -1,7 +1,3 @@
-//ISSUES:
-// 1. process.env doesn't work here
-// 2. The map isn't showing everything
-
 import React, { useState, useEffect } from "react";
 
 const REACT_APP_GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;

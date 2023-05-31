@@ -1,7 +1,3 @@
-//ISSUES:
-// 1. The map isn't showing everything
-// 2. Finish the styling
-
 import React, { useState, useEffect } from "react";
 import Map from "./Map";
 
