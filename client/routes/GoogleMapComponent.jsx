@@ -16,7 +16,7 @@ const { VITE_GOOGLE_API_KEY } = import.meta.env;
 
 //
 
-export default function GoogleMapComponent({ parks, selectedPark }) {
+export default function GoogleMapComponent() {
   //ADDED BY ZARINA
 
   //MAP
@@ -27,11 +27,30 @@ export default function GoogleMapComponent({ parks, selectedPark }) {
   });
   // const center = useMemo(() => ({ lat: 18.52043, lng: 73.856743 }), []);
 
-  const markers = [
+  const [markers, setMarkers] = useState([
     { lat: 18.5204, lng: 73.8567 },
     { lat: 18.5314, lng: 73.8446 },
     { lat: 18.5642, lng: 73.7769 },
-  ];
+  ]);
+
+  const [input, setInput] = useState("");
+  const [service, setService] = useState("");
+
+  const handleChange = (event) => {
+    setInput(`${event.target.value}`);
+    console.log(input);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    search();
+  };
+
+  const search = () => {
+    service.textSearch({ query: input }, (suggestions) => {
+      console.log(suggestions);
+    });
+  };
 
   const onLoad = (map) => {
     const bounds = new window.google.maps.LatLngBounds();
@@ -42,15 +61,24 @@ export default function GoogleMapComponent({ parks, selectedPark }) {
 
     const placesService = new window.google.maps.places.PlacesService(map);
     console.log(placesService);
-    placesService.textSearch({ query: "barcelona" }, (suggestions) => {
-      console.log(suggestions);
-    });
+    setService(placesService);
+    console.log(service);
   };
 
   //
 
   return (
     <div>
+      <form onSubmit={handleSubmit} className="mt-3 mb-3">
+        <input
+          type="text"
+          value={input}
+          onChange={handleChange}
+          placeholder="Search for amusement parks"
+        />
+        <button>Search</button>
+      </form>
+
       <div className="App">
         {!isLoaded ? (
           <h1>Loading...</h1>
