@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Map from "./Map";
+import GoogleMapComponent from "./GoogleMapComponent";
 
 export default function Home() {
   const [parks, setParks] = useState([]);
@@ -132,7 +133,11 @@ export default function Home() {
         ))}
       </div>
       {/* SHOW THEM ON THE MAP */}
-      <Map parks={parks} selectedPark={selectedPark} />
+      {/* <Map parks={parks} selectedPark={selectedPark} /> */}
+
+      <hr />
+
+      <GoogleMapComponent />
     </div>
   );
 }
