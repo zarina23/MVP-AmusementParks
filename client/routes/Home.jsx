@@ -8,7 +8,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [selectedPark, setSelectedPark] = useState(null);
   const [searchResultsList, setSearchResultsList] = useState([]); //this is the main state used for the logic of the app
-  const [highlightedPark, setHighlightedPark] = useState()
+  const [highlightedPark, setHighlightedPark] = useState("")
 
   const changeSearchResultsList = (newSearchResultsList) => {
     setSearchResultsList(newSearchResultsList);
@@ -98,6 +98,7 @@ export default function Home() {
         changeSearchResultsList={changeSearchResultsList}
         searchResultsList={searchResultsList}
         highlightedPark={highlightedPark}
+        setHighlightedPark={setHighlightedPark}
       />
 
       <div className="list-group mt-3 ">

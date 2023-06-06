@@ -15,6 +15,7 @@ export default function GoogleMapComponent({
   changeSearchResultsList,
   searchResultsList,
   highlightedPark,
+  setHighlightedPark,
 }) {
   //MAP
   const { isLoaded } = useJsApiLoader({
@@ -48,7 +49,6 @@ export default function GoogleMapComponent({
   //       };
   // });
 
-
   //other states that are needed
   const [input, setInput] = useState("");
   const [service, setService] = useState("");
@@ -76,6 +76,7 @@ export default function GoogleMapComponent({
 
       //this is setting searchResultsList state passed as a prop from Home page (will use this state for markers on the map, as well as for rendering the list of found parks on the page)
       changeSearchResultsList(filteredSuggestions);
+      setHighlightedPark("");
     });
   };
 
@@ -90,9 +91,19 @@ export default function GoogleMapComponent({
     setService(placesService);
   };
 
-  const handleMarkerClick = (id, name, lat, lng, address) => {
+  useEffect(() => {
+    showMarkerInfoWindow(
+      highlightedPark?.place_id,
+      highlightedPark?.name,
+      highlightedPark?.formatted_address
+    );
+  }, [highlightedPark]);
+
+  const showMarkerInfoWindow = (id, name, address) => {
     // mapRef?.panTo({ lat, lng });
+
     setInfoWindowData({ id, address, name });
+
     setIsOpen(true);
   };
 
@@ -120,7 +131,6 @@ export default function GoogleMapComponent({
               mapContainerClassName="map-container"
               onLoad={onLoad}
               center={
-
                 !highlightedPark
                   ? {
                       lat: searchResultsList[0]?.geometry.location.lat(),
@@ -139,7 +149,7 @@ export default function GoogleMapComponent({
                     lng: locationDetails.geometry.location.lng(),
                   }}
                   onClick={() => {
-                    handleMarkerClick(
+                    showMarkerInfoWindow(
                       locationDetails.place_id,
                       locationDetails.name,
                       locationDetails.geometry.location.lat(),
