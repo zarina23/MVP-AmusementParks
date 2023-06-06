@@ -1,6 +1,10 @@
-h3 {
+* {
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
+}
+
+h3,
+h4 {
   color: rgb(76, 10, 137);
 }
 
@@ -15,4 +19,14 @@ h3 {
 
 .error-message {
   font-size: x-small;
+}
+
+.rating {
+  margin-right: 20px;
+  min-width: 90px;
+}
+
+.rating:hover {
+  background-color: #212529 !important;
+  cursor: default !important;
 }

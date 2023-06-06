@@ -77,6 +77,8 @@ export default function GoogleMapComponent({
       //this is setting searchResultsList state passed as a prop from Home page (will use this state for markers on the map, as well as for rendering the list of found parks on the page)
       changeSearchResultsList(filteredSuggestions);
       setHighlightedPark("");
+
+      setInput("");
     });
   };
 

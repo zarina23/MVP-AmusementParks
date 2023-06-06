@@ -7,8 +7,9 @@ export default function Home() {
   const [newPark, setNewPark] = useState("");
   const [error, setError] = useState("");
   const [selectedPark, setSelectedPark] = useState(null);
+
   const [searchResultsList, setSearchResultsList] = useState([]); //this is the main state used for the logic of the app
-  const [highlightedPark, setHighlightedPark] = useState("")
+  const [highlightedPark, setHighlightedPark] = useState("");
 
   const changeSearchResultsList = (newSearchResultsList) => {
     setSearchResultsList(newSearchResultsList);
@@ -86,7 +87,7 @@ export default function Home() {
   const changeHighlightedPark = (locationDetails) => {
     console.log(locationDetails);
     setHighlightedPark(locationDetails);
-  }
+  };
 
   return (
     <div className="container">
@@ -101,38 +102,46 @@ export default function Home() {
         setHighlightedPark={setHighlightedPark}
       />
 
-      <div className="list-group mt-3 ">
+      <h4 className="text-center mt-3">
+        Check out these parks based on your search
+      </h4>
+
+      <div className="list-group mt-3 mb-5">
         {searchResultsList?.map((locationDetails) => (
           <div
             key={locationDetails.place_id}
-            className=" list-group-item d-flex align-items-start justify-content-between"
+            className="list-group-item d-flex justify-content-between align-items-center"
           >
-            <p onClick={() => changeHighlightedPark(locationDetails)}>
-              {locationDetails.name} {locationDetails.rating}
+            <p
+              onClick={() => changeHighlightedPark(locationDetails)}
+              className="align-self-end"
+            >
+              {locationDetails.name}
             </p>
-            <div className=" align-items-start justify-content-between">
-              {/* <div onClick={() => showParkOnMap(park)}> */}
-              <div>
-                <button className=" btn btn-outline-success btn-sm">
-                  <i className=" fa-solid fa-location-dot"></i>
-                </button>
 
-                {/* <a href={park.url} target="_blank">
+            <div>
+              <div className="btn btn-dark btn-sm rating">
+                Rating {locationDetails.rating}
+              </div>
+              <button className=" btn btn-outline-success btn-sm">
+                <i className=" fa-solid fa-location-dot"></i>
+              </button>
+
+              {/* <a href={park.url} target="_blank">
                   <button className=" btn btn-outline-info btn-sm">
                     <i className="  fa-solid fa-circle-info"></i>
                   </button>
                 </a> */}
-                <button
-                  className=" btn btn-outline-warning btn-sm"
-                  type="submit"
-                  onClick={(e) => {
-                    addToWishlist(e, locationDetails);
-                    disableButton(e);
-                  }}
-                >
-                  <i className="  fa-solid fa-star"></i>
-                </button>
-              </div>
+              <button
+                className=" btn btn-outline-warning btn-sm"
+                type="submit"
+                onClick={(e) => {
+                  addToWishlist(e, locationDetails);
+                  disableButton(e);
+                }}
+              >
+                <i className="  fa-solid fa-star"></i>
+              </button>
             </div>
           </div>
         ))}
