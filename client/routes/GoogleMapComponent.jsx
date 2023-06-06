@@ -14,6 +14,7 @@ const { VITE_GOOGLE_API_KEY } = import.meta.env;
 export default function GoogleMapComponent({
   changeSearchResultsList,
   searchResultsList,
+  highlightedPark,
 }) {
   //MAP
   const { isLoaded } = useJsApiLoader({
@@ -34,6 +35,20 @@ export default function GoogleMapComponent({
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
 
+  //state for setting center of the map
+  // const [center, setCenter] = useState(() => {
+  //   return !highlightedPark
+  //     ? {
+  //         lat: searchResultsList[0]?.geometry.location.lat(),
+  //         lng: searchResultsList[0]?.geometry.location.lng(),
+  //       }
+  //     : {
+  //         lat: highlightedPark.geometry.location.lat(),
+  //         lng: highlightedPark.geometry.location.lng(),
+  //       };
+  // });
+
+
   //other states that are needed
   const [input, setInput] = useState("");
   const [service, setService] = useState("");
@@ -46,6 +61,7 @@ export default function GoogleMapComponent({
   const handleSubmit = (event) => {
     event.preventDefault();
     search();
+    console.log(highlightedPark);
   };
 
   const search = () => {
@@ -103,10 +119,18 @@ export default function GoogleMapComponent({
             <GoogleMap
               mapContainerClassName="map-container"
               onLoad={onLoad}
-              center={{
-                lat: searchResultsList[0]?.geometry.location.lat(),
-                lng: searchResultsList[0]?.geometry.location.lng(),
-              }}
+              center={
+
+                !highlightedPark
+                  ? {
+                      lat: searchResultsList[0]?.geometry.location.lat(),
+                      lng: searchResultsList[0]?.geometry.location.lng(),
+                    }
+                  : {
+                      lat: highlightedPark.geometry.location.lat(),
+                      lng: highlightedPark.geometry.location.lng(),
+                    }
+              }
             >
               {searchResultsList?.map((locationDetails) => (
                 <MarkerF
