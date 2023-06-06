@@ -7,6 +7,12 @@ export default function Home() {
   const [newPark, setNewPark] = useState("");
   const [error, setError] = useState("");
   const [selectedPark, setSelectedPark] = useState(null);
+  const [searchResultsList, setSearchResultsList] = useState([]); //this is the main state used for the logic of the app
+  const [highlightedPark, setHighlightedPark] = useState({})
+
+  const changeSearchResultsList = (newSearchResultsList) => {
+    setSearchResultsList(newSearchResultsList);
+  };
 
   useEffect(() => {
     setError("");
@@ -35,12 +41,14 @@ export default function Home() {
   //ADD the park to my wishlist
   async function addToWishlist(e, park) {
     const body = {
-      id: park.id,
+      id: park.place_id,
       name: park.name,
-      image_url: park.image_url,
-      url: park.url,
-      latitude: park.coordinates.latitude,
-      longitude: park.coordinates.longitude,
+      rating: park.rating,
+      address: park.formatted_address,
+      image_url: park.photos[0].getUrl(),
+      // url: park.url,
+      latitude: park.geometry.location.lat(),
+      longitude: park.geometry.location.lng(),
     };
 
     e.preventDefault();
@@ -60,7 +68,7 @@ export default function Home() {
         console.log("Response was not ok");
         throw new Error(data.message);
       }
-      getParks();
+      // getParks();
     } catch (err) {
       console.log("Error adding park to wishlist: " + err);
     }
@@ -75,53 +83,48 @@ export default function Home() {
     setSelectedPark(park);
   };
 
+  const changeHighlightedPark = (locationDetails) => {
+    console.log(locationDetails);
+    setHighlightedPark(locationDetails);
+  }
+
   return (
     <div className="container">
       <h3 className="text-center">My Theme Park Database</h3>
 
-      {/* SEARCH FOR LOCATION OR PARK */}
-
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
-          <input
-            placeholder="What park or location are you looking for?"
-            type="text"
-            value={newPark}
-            onChange={handleChange}
-            className="form-control"
-          />
-          <button type="submit" className="search-button">
-            Search
-          </button>
-        </div>
-      </form>
       {error && <div className="error-message">{error}</div>}
 
-      {/* DISPLAY THE RESULTS */}
+      <GoogleMapComponent
+        changeSearchResultsList={changeSearchResultsList}
+        searchResultsList={searchResultsList}
+      />
 
       <div className="list-group mt-3 ">
-        {parks.map((park) => (
+        {searchResultsList?.map((locationDetails) => (
           <div
-            key={park.id}
+            key={locationDetails.place_id}
             className=" list-group-item d-flex align-items-start justify-content-between"
           >
-            {park.name}
+            <p onClick={()=> changeHighlightedPark(locationDetails)}>
+              {locationDetails.name} {locationDetails.rating}
+            </p>
             <div className=" align-items-start justify-content-between">
-              <div onClick={() => showParkOnMap(park)}>
+              {/* <div onClick={() => showParkOnMap(park)}> */}
+              <div>
                 <button className=" btn btn-outline-success btn-sm">
                   <i className=" fa-solid fa-location-dot"></i>
                 </button>
 
-                <a href={park.url} target="_blank">
+                {/* <a href={park.url} target="_blank">
                   <button className=" btn btn-outline-info btn-sm">
                     <i className="  fa-solid fa-circle-info"></i>
                   </button>
-                </a>
+                </a> */}
                 <button
                   className=" btn btn-outline-warning btn-sm"
                   type="submit"
                   onClick={(e) => {
-                    addToWishlist(e, park);
+                    addToWishlist(e, locationDetails);
                     disableButton(e);
                   }}
                 >
@@ -132,12 +135,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-      {/* SHOW THEM ON THE MAP */}
-      {/* <Map parks={parks} selectedPark={selectedPark} /> */}
-
-      <hr />
-
-      <GoogleMapComponent />
     </div>
   );
 }

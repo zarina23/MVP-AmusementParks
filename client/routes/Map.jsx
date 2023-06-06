@@ -11,7 +11,6 @@ import {
   useJsApiLoader,
 } from "@react-google-maps/api";
 import { useMemo } from "react";
-import "./Map.css";
 const { VITE_GOOGLE_API_KEY } = import.meta.env;
 
 //

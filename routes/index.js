@@ -38,11 +38,11 @@ router.get("/search/:location", async (req, res) => {
 // INSERT the items in the DB (parks)
 router.post("/wishlist", async function (req, res, next) {
   console.log("Post succeeded");
-  const { id, name, image_url, url, latitude, longitude } = req.body;
+  const { id, name, rating, address, image_url, latitude, longitude } = req.body;
   console.log(req.body);
   try {
     await db(
-      `INSERT INTO parks (yelp_id, name, image_url, url, latitude, longitude) VALUES ("${id}", "${name}", "${image_url}", "${url}", "${latitude}", "${longitude}")`
+      `INSERT INTO parks (google_id, name, rating, address, image_url, latitude, longitude) VALUES ("${id}", "${name}", "${rating}", "${address}", "${image_url}", "${latitude}", "${longitude}")`
     );
     res.send({ message: "Saved in your wishlist!" });
   } catch (err) {

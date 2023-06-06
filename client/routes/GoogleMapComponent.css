@@ -1,0 +1,22 @@
+.map-container-wrap {
+ display: flex;
+  justify-content: center;
+}
+
+.App {
+  min-height: 50vh;
+  min-width: 50vw;
+ }
+
+.map-container {
+  height: 100%;
+  width: 100%;
+}
+
+.infoWindowTitle {
+font-weight: bold;
+}
+
+.infoWindowData {
+  text-align: justify;
+}
