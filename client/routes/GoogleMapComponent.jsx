@@ -154,8 +154,8 @@ export default function GoogleMapComponent({
                     showMarkerInfoWindow(
                       locationDetails.place_id,
                       locationDetails.name,
-                      locationDetails.geometry.location.lat(),
-                      locationDetails.geometry.location.lng(),
+                      // locationDetails.geometry.location.lat(),
+                      // locationDetails.geometry.location.lng(),
                       locationDetails.formatted_address
                     );
                   }}

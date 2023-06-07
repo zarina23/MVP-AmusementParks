@@ -11,32 +11,13 @@ export default function Home() {
   const [searchResultsList, setSearchResultsList] = useState([]); //this is the main state used for the logic of the app
   const [highlightedPark, setHighlightedPark] = useState("");
 
+  const [
+    selectedToShowPhotoAndOpeningHours,
+    setSelectedToShowPhotoAndOpeningHours,
+  ] = useState();
+
   const changeSearchResultsList = (newSearchResultsList) => {
     setSearchResultsList(newSearchResultsList);
-  };
-
-  useEffect(() => {
-    setError("");
-  }, [newPark]);
-
-  const getParks = async () => {
-    try {
-      const response = await fetch(`/api/search/${newPark}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-      setParks(data.businesses);
-    } catch (err) {
-      setError("Oops! Looks like this park doesn't exist.");
-    }
-  };
-
-  const handleChange = (event) => {
-    setNewPark(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    getParks();
   };
 
   //ADD the park to my wishlist
@@ -47,7 +28,6 @@ export default function Home() {
       rating: park.rating,
       address: park.formatted_address,
       image_url: park.photos[0].getUrl(),
-      // url: park.url,
       latitude: park.geometry.location.lat(),
       longitude: park.geometry.location.lng(),
     };
@@ -68,6 +48,8 @@ export default function Home() {
       if (!response.ok) {
         console.log("Response was not ok");
         throw new Error(data.message);
+      } else {
+        alert(`${park.name} has been added to your wishlist!`);
       }
       // getParks();
     } catch (err) {
@@ -80,13 +62,20 @@ export default function Home() {
     event.currentTarget.disabled = true;
   };
 
-  const showParkOnMap = (park) => {
-    setSelectedPark(park);
-  };
-
   const changeHighlightedPark = (locationDetails) => {
     console.log(locationDetails);
     setHighlightedPark(locationDetails);
+  };
+
+  const showPhotoAndOpeningHours = (id) => {
+    console.log(id);
+    !selectedToShowPhotoAndOpeningHours?.[id]
+      ? setSelectedToShowPhotoAndOpeningHours({
+          [id]: true,
+        })
+      : setSelectedToShowPhotoAndOpeningHours({
+          [id]: false,
+        });
   };
 
   return (
@@ -102,49 +91,75 @@ export default function Home() {
         setHighlightedPark={setHighlightedPark}
       />
 
-      <h4 className="text-center mt-3">
-        Check out these parks based on your search
-      </h4>
+      <div className="list-group m-5">
+        {searchResultsList && (
+          <>
+            <h4 className="text-center mb-3">
+              Check out these parks based on your search
+            </h4>
+            {searchResultsList?.map((locationDetails) => (
+              <div key={locationDetails.place_id} className="list-group-item">
+                <div className="d-flex justify-content-between align-items-center">
+                  <p
+                    onClick={() => changeHighlightedPark(locationDetails)}
+                    className={
+                      selectedToShowPhotoAndOpeningHours ? "fw-bold" : ""
+                    }
+                  >
+                    {locationDetails.name}
+                  </p>
 
-      <div className="list-group mt-3 mb-5">
-        {searchResultsList?.map((locationDetails) => (
-          <div
-            key={locationDetails.place_id}
-            className="list-group-item d-flex justify-content-between align-items-center"
-          >
-            <p
-              onClick={() => changeHighlightedPark(locationDetails)}
-              className="align-self-end"
-            >
-              {locationDetails.name}
-            </p>
+                  <div>
+                    <div className="btn btn-dark btn-sm rating">
+                      Rating {locationDetails.rating}
+                    </div>
 
-            <div>
-              <div className="btn btn-dark btn-sm rating">
-                Rating {locationDetails.rating}
+                    <button
+                      className=" btn btn-outline-success btn-sm"
+                      onClick={() => changeHighlightedPark(locationDetails)}
+                    >
+                      <i className=" fa-solid fa-location-dot"></i>
+                    </button>
+
+                    <button
+                      className=" btn btn-outline-info btn-sm"
+                      onClick={() =>
+                        showPhotoAndOpeningHours(locationDetails.place_id)
+                      }
+                    >
+                      <i className="  fa-solid fa-circle-info"></i>
+                    </button>
+                    <button
+                      className=" btn btn-outline-warning btn-sm"
+                      type="submit"
+                      onClick={(e) => {
+                        addToWishlist(e, locationDetails);
+                        disableButton(e);
+                      }}
+                    >
+                      <i className="fa-solid fa-star"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  {selectedToShowPhotoAndOpeningHours?.[
+                    locationDetails.place_id
+                  ] &&
+                    locationDetails?.photos && (
+                      <div className="d-flex justify-content-end mt-2 mb-2">
+                        <img
+                          src={locationDetails?.photos?.[0]?.getUrl()}
+                          alt=""
+                          height="250px"
+                        />
+                      </div>
+                    )}
+                </div>
               </div>
-              <button className=" btn btn-outline-success btn-sm">
-                <i className=" fa-solid fa-location-dot"></i>
-              </button>
-
-              {/* <a href={park.url} target="_blank">
-                  <button className=" btn btn-outline-info btn-sm">
-                    <i className="  fa-solid fa-circle-info"></i>
-                  </button>
-                </a> */}
-              <button
-                className=" btn btn-outline-warning btn-sm"
-                type="submit"
-                onClick={(e) => {
-                  addToWishlist(e, locationDetails);
-                  disableButton(e);
-                }}
-              >
-                <i className="  fa-solid fa-star"></i>
-              </button>
-            </div>
-          </div>
-        ))}
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
